@@ -1,0 +1,100 @@
+@page "/report/pay/{AccountIban}"
+@using InvBank.Web.Contracts.Report
+@inject ReportEndPoint reportEndPoint
+
+ <h1>Generation Report</h1>
+
+@if (PayReport is not null)
+{
+
+    <h1>Pagamentos em ativos de deposito</h1>
+
+        <table class="mt-8 table table.sprited table-bordered table-hover">
+              <thead>
+                <th>Id</th>
+                <th>Data de Pagamento</th>
+                <th>codigo de conta de deposito</th>
+                <th>valor</th>
+              </thead>
+              <tbody>
+                @if(PayReport.PaymentDeposit.Count() > 0) {
+                  @foreach (var paymentDeposit in PayReport.PaymentDeposit)
+                  {
+                    <tr>
+                      <td>@paymentDeposit.Id</td>
+                      <td>@paymentDeposit.PaymentDate</td>
+                      <td>@paymentDeposit.DepositAccount.Id</td>
+                      <td>@paymentDeposit.Amount</td>
+                    </tr>
+                  }
+                  <tr>
+                      <td>Total</td>
+                      <td></td>
+                      <td></td>
+                      <td>@PayReport.PaymentDeposit.Sum(pd => pd.Amount)</td>
+                  </tr>
+                } else {
+                  <tr><td colspan="11" align="center">Nenhum ativo registado!</td></tr>
+                }
+              </tbody>
+            </table>
+
+    <h1>Pagamentos em ativos ímoveis</h1>
+
+     <table class="mt-8 table table.sprited table-bordered table-hover">
+              <thead>
+                <th>Id</th>
+                <th>Data de Pagamento</th>
+                <th>codigo de conta de deposito</th>
+                <th>valor</th>
+              </thead>
+              <tbody>
+                @if(PayReport.PaymentProperty.Count() > 0) {
+                  @foreach (var paymentProperty in PayReport.PaymentProperty)
+                  {
+                    <tr>
+                      <td>@paymentProperty.Id</td>
+                      <td>@paymentProperty.PaymentDate</td>
+                      <td>@paymentProperty.DepositAccount.Id</td>
+                      <td>@paymentProperty.Amount</td>
+                    </tr>
+                  }
+                  <tr>
+                      <td>Total</td>
+                      <td></td>
+                      <td></td>
+                      <td>@PayReport.PaymentProperty.Sum(pd => pd.Amount)</td>
+                  </tr>
+                } else {
+                  <tr><td colspan="11" align="center">Nenhum ativo registado!</td></tr>
+                }
+              </tbody>
+            </table>
+}
+
+@code {
+
+    [Parameter]
+    public string AccountIban { get; set; } = null!;
+
+    public PayReportResponse PayReport { get; set; } = null!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var result = await reportEndPoint.GenerateReportPay(AccountIban, new GeneratePayReportRequest 
+        {
+            InitialDate = "18/06/2023",
+            EndDate = "23/07/2023"
+        });
+
+        if (result.IsError)
+        {
+            return;
+        }
+
+        PayReport = result.Value;
+
+    }
+
+}
+

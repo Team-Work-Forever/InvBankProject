@@ -1,0 +1,63 @@
+@page "/report/profit/{AccountIban}"
+@using InvBank.Web.Contracts.Report
+@inject ReportEndPoint reportEndPoint
+
+ <h1>Generation Report</h1>
+
+@if (ProfitReport is not null)
+{
+    <h1>Ativos de Deposito</h1>
+
+    <div class="mt-6">
+        <p>Lucro total antes dos impostos</p>
+        <p>@ProfitReport.BeforeProfitDeposit</p>
+    </div>
+
+   <div class="mt-6">
+        <p>Lucro total antes depois dos impostos</p>
+        <p>@ProfitReport.AfterProfitDeposit</p>
+   </div>
+
+    <h1>Ativos de Propriedade</h1>
+
+    <div class="mt-6">
+        <p>Lucro total antes dos impostos</p>
+        <p>@ProfitReport.BeforeProfitProperty</p>
+    </div>
+    <div class="mt-6">
+        <p>Lucro total antes depois dos impostos</p>
+        <p>@ProfitReport.AfterProfitProperty</p>
+    </div>
+
+    <div class="mt-6">
+        <p>Lucro mensal médio</p>
+        <p>@ProfitReport.ProfitMean</p>
+    </div>
+}
+
+@code {
+
+    [Parameter]
+    public string AccountIban { get; set; } = null!;
+
+    public ProfitReportResponse ProfitReport { get; set; } = null!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var result = await reportEndPoint.GenerateReportProfit(new GenerateProfitReportRequest 
+        {
+            InitialDate = "18/07/2023",
+            EndDate = "23/07/2023"
+        });
+
+        if (result.IsError)
+        {
+            return;
+        }
+
+        ProfitReport = result.Value;
+
+    }
+
+}
+

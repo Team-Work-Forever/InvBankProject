@@ -1,0 +1,48 @@
+﻿<div class="top-row ps-3 navbar navbar-dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="">Banco Investe Aqui</a>
+    <button
+      title="Navigation menu"
+      class="navbar-toggler"
+        @onclick="ToggleNavMenu"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+  </div>
+</div>
+
+<div class="@NavMenuCssClass nav-scrollable" @onclick="ToggleNavMenu">
+  <nav class="flex-column">
+    <div class="nav-item px-3">
+      <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+        <span class="oi bi-house-door-fill" aria-hidden="true"></span>
+        Início
+      </NavLink>
+    </div>
+    <div class="nav-item px-3">
+      <NavLink class="nav-link" href="actives">
+        <span class="oi bi-briefcase-fill" aria-hidden="true"></span> Ativos
+      </NavLink>
+    </div>
+    <div class="nav-item px-3">
+      <NavLink class="nav-link" href="extracts">
+        <span class="oi bi-file-earmark-text-fill" aria-hidden="true"></span>
+        Extratos
+      </NavLink>
+    </div>
+    <div class="nav-item px-3">
+      <NavLink class="nav-link" href="accounts">
+        <span class="oi bi-person-vcard-fill" aria-hidden="true"></span>
+        Extratos
+      </NavLink>
+    </div>
+  </nav>
+</div>
+
+@code {
+    private bool collapseNavMenu = true; private string? NavMenuCssClass =>
+    collapseNavMenu ? "collapse" : null; private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+} 
